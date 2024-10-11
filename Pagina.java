@@ -1,5 +1,5 @@
 public class Pagina {
-    private int numero; // Número de página
+    private int numero;
     private boolean bitReferencia; // Bit de referencia (si fue usada recientemente)
     private boolean enRAM; // Si está en RAM o no
     private long timestamp; // Marca de tiempo para reemplazo
