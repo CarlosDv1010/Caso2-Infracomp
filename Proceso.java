@@ -19,46 +19,32 @@ public class Proceso {
     }
 
     public void recuperarMensaje(char[] cadena) throws IOException {
-        int longitud = imagen.leerLongitud();
-        this.cadena = imagen.recuperar(cadena, longitud); 
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("referencias.txt"))) {
 
-        guardarReferenciasEnArchivo("referencias.txt", imagen.getAncho(), imagen.getAlto(), referencias.size(), (referencias.size() / tamanioPagina));
-    }
+            int longitud = 5069;
+            int nr = longitud * 17 + 16;
+            int np = (int) Math.ceil((double) (imagen.getAncho() * imagen.getAlto() * 3) / tamanioPagina) + (int) Math.ceil((double) longitud / tamanioPagina);
+            int inicial = (int) Math.ceil((double) (imagen.getAncho() * imagen.getAlto() * 3) / tamanioPagina);
 
-    private void guardarReferenciasEnArchivo(String nombreArchivo, int anchoImagen, int altoImagen, int totalBytes, int paginasNecesarias) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo));
-        
-        writer.write("P=" + tamanioPagina + "\n");
-        writer.write("NF=" + altoImagen + "\n");
-        writer.write("NC=" + anchoImagen + "\n");
-        writer.write("NR=" + referencias.size() + "\n");
-        writer.write("NP=" + paginasNecesarias + "\n");
-        
-        for (int numBytes = 0; numBytes < totalBytes; numBytes++) {
-            int fila = numBytes / (anchoImagen * 3); 
-            int col = (numBytes % (anchoImagen * 3)) / 3; 
-            int componente = numBytes % 3; 
-            String componenteRGB = (componente == 0) ? "R" : (componente == 1) ? "G" : "B";
-            
-            int numeroPagina = numBytes / tamanioPagina;
-            int desplazamiento = numBytes % tamanioPagina;
-            
-            writer.write(String.format("Imagen[%d][%d].%s,%d,%d,R\n", fila, col, componenteRGB, numeroPagina, desplazamiento));
+            // Escribir los encabezados del archivo
+            writer.write("P=" + tamanioPagina + "\n");
+            writer.write("NF=" + imagen.getAlto() + "\n");
+            writer.write("NC=" + imagen.getAncho() + "\n");
+            writer.write("NR=" + nr + "\n");
+            writer.write("NP=" + np + "\n");
+            imagen.leerLongitudReferencias(writer, np);
+            // Recuperar el mensaje y generar referencias adicionales
+            this.cadena = imagen.recuperar(cadena, 5069, writer, tamanioPagina, inicial);
         }
-        for (int posCaracter = 0; posCaracter < cadena.length; posCaracter++) {
-            for (int i = 0; i < 8; i++) { 
-                int numBytes = 16 + (posCaracter * 8) + i; 
     
-                int numeroPagina = numBytes / tamanioPagina;
-                int desplazamiento = numBytes % tamanioPagina;
-    
-                writer.write(String.format("Mensaje[%d],%d,%d,W\n", posCaracter, numeroPagina, desplazamiento));
-            }
-        }
-        
-        writer.close();
-        System.out.println("Archivo de referencias generado: " + nombreArchivo);
+        System.out.println("Archivo de referencias generado.");
     }
+    
+
+    
+
+
     
 
     public List<Pagina> getPaginas() {

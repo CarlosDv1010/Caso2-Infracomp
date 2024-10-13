@@ -11,13 +11,13 @@ public class Main {
             String archivoImagen = "caso2-parrots_mod.bmp"; // Ejemplo
 
             System.out.println("Ingrese el tamaño de página:");
-            int tamanioPagina = 64; // Ejemplo
+            int tamanioPagina = 256; // Ejemplo
 
             Imagen imagen = new Imagen(archivoImagen); 
             Proceso proceso = new Proceso(imagen, tamanioPagina);
             imagen.inicializarProceso(proceso); 
 
-            char[] cadena = new char[imagen.leerLongitud()];
+            char[] cadena = new char[5069]; // Ejemplo
             proceso.recuperarMensaje(cadena); // Recuperar el mensaje y generar referencias
 
             System.out.println("Ingrese el número de marcos de página:");

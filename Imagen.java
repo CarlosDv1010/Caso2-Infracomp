@@ -71,27 +71,54 @@ public class Imagen {
         }
     }
 
-    public char[] recuperar(char[] cadena, int longitud) {
-        int bytesFila = ancho * 3; 
+    public char[] recuperar(char[] cadena, int longitud, BufferedWriter writer, int tamanioPagina, int inicial) throws IOException {
+        int bytesFila = ancho * 3;
+        int paginaActualImagen = 0;
+        int desplazamientoImagen = 0;
+    
+        int paginaActualMensaje = inicial;
+        int desplazamientoMensaje = 0;
     
         for (int posCaracter = 0; posCaracter < longitud; posCaracter++) {
-            cadena[posCaracter] = 0; 
+            // Acceso inicial al mensaje por la asignación de 0
+            cadena[posCaracter] = 0;
+            writer.write(String.format("Mensaje[%d],%d,%d,W\n", posCaracter, paginaActualMensaje, desplazamientoMensaje));
+    
             for (int i = 0; i < 8; i++) {
-                int numBytes = 16 + (posCaracter * 8) + i; 
-                int fila = numBytes / bytesFila; 
-                int col = numBytes % (bytesFila) / 3; 
+                int numBytes = 16 + (posCaracter * 8) + i;
+                int fila = numBytes / bytesFila;
+                int col = numBytes % (bytesFila) / 3;
+                int componente = (numBytes % bytesFila) % 3;
+                String componenteRGB = (componente == 0) ? "R" : (componente == 1) ? "G" : "B";
     
                 // Calcular el número de página basado en el byte actual
-                int numeroPagina = numBytes / proceso.getTamanioPagina();
+                int numeroPaginaImagen = numBytes / tamanioPagina;
     
-                // Agregar la referencia del byte leído
-                proceso.getReferencias().add(numeroPagina);
+                // Escribir la referencia del byte leído para la imagen con el componente adecuado
+                writer.write(String.format("Imagen[%d][%d].%s,%d,%d,R\n", fila, col, componenteRGB, numeroPaginaImagen, desplazamientoImagen));
     
-                // Recuperar el bit menos significativo del byte actual
-                cadena[posCaracter] |= (imagen[fila][col][(numBytes % bytesFila) % 3] & 1) << i;
+                // Recuperar el bit menos significativo del byte actual y actualizar la cadena
+                cadena[posCaracter] |= (imagen[fila][col][componente] & 1) << i;
+    
+                // Escribir la referencia de la modificación del mensaje
+                writer.write(String.format("Mensaje[%d],%d,%d,W\n", posCaracter, paginaActualMensaje, desplazamientoMensaje));
+    
+                // Actualizar desplazamiento de la imagen
+                desplazamientoImagen++;
+                if (desplazamientoImagen == tamanioPagina) {
+                    paginaActualImagen++;
+                    desplazamientoImagen = 0;
+                }
+            }
+    
+            // Después de 8 iteraciones, actualizar el desplazamiento del mensaje
+            desplazamientoMensaje++;
+            if (desplazamientoMensaje == tamanioPagina) {
+                paginaActualMensaje++;
+                desplazamientoMensaje = 0;
             }
         }
-
+    
         return cadena;
     }
     
@@ -118,12 +145,42 @@ public class Imagen {
         }
     }
 
-    public int leerLongitud() {
+    public int leerLongitudReferencias(BufferedWriter writer, int tamanioPagina) throws IOException {
         int longitud = 0;
+        int paginaActual = 0;
+        int desplazamiento = 0;
+    
         for (int i = 0; i < 16; i++) {
             int col = (i % (ancho * 3)) / 3;
-            longitud |= (imagen[0][col][(i % (ancho * 3)) % 3] & 1) << i;
+            int componente = (i % (ancho * 3)) % 3;
+            String componenteRGB = (componente == 0) ? "R" : (componente == 1) ? "G" : "B";
+    
+            longitud |= (imagen[0][col][componente] & 1) << i;
+    
+            // Escribir la referencia del byte leído con el componente adecuado
+            writer.write(String.format("Imagen[0][%d].%s,%d,%d,R\n", col, componenteRGB, paginaActual, desplazamiento));
+    
+            // Actualizar desplazamiento y página
+            desplazamiento++;
+            if (desplazamiento == tamanioPagina) {
+                paginaActual++;
+                desplazamiento = 0;
+            }
         }
+    
+        return longitud;
+    }
+
+    public int leerLongitud(BufferedWriter writer, int tamanioPagina) throws IOException {
+        int longitud = 0;
+    
+        for (int i = 0; i < 16; i++) {
+            int col = (i % (ancho * 3)) / 3;
+            int componente = (i % (ancho * 3)) % 3;
+    
+            longitud |= (imagen[0][col][componente] & 1) << i;
+        }
+    
         return longitud;
     }
 
