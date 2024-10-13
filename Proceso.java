@@ -9,7 +9,6 @@ public class Proceso {
     private int tamanioPagina; 
     private Imagen imagen; 
     private List<Integer> referencias; 
-    private char[] cadena; 
 
     public Proceso(Imagen imagen, int tamanioPagina) {
         this.imagen = imagen;
@@ -35,18 +34,12 @@ public class Proceso {
             writer.write("NP=" + np + "\n");
             imagen.leerLongitudReferencias(writer, np);
             // Recuperar el mensaje y generar referencias adicionales
-            this.cadena = imagen.recuperar(cadena, 5069, writer, tamanioPagina, inicial);
+            imagen.recuperar(cadena, 5069, writer, tamanioPagina, inicial);
         }
     
         System.out.println("Archivo de referencias generado.");
     }
     
-
-    
-
-
-    
-
     public List<Pagina> getPaginas() {
         return paginas;
     }
@@ -59,7 +52,4 @@ public class Proceso {
         return tamanioPagina;
     }
 
-    public void setCadena(char[] cadena) {
-        this.cadena = cadena;
-    }
 }

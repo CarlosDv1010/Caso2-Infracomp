@@ -6,7 +6,6 @@ public class Imagen {
     private int alto, ancho; 
     private int padding; 
     private String nombre; 
-    private Proceso proceso; 
     private int hits;
     private int misses;
 
@@ -15,9 +14,6 @@ public class Imagen {
         leerImagen();
     }
 
-    public void inicializarProceso (Proceso proceso) {
-        this.proceso = proceso;
-    }
 
     private void leerImagen() {
         try {
@@ -73,14 +69,12 @@ public class Imagen {
 
     public char[] recuperar(char[] cadena, int longitud, BufferedWriter writer, int tamanioPagina, int inicial) throws IOException {
         int bytesFila = ancho * 3;
-        int paginaActualImagen = 0;
         int desplazamientoImagen = 0;
     
         int paginaActualMensaje = inicial;
         int desplazamientoMensaje = 0;
     
         for (int posCaracter = 0; posCaracter < longitud; posCaracter++) {
-            // Acceso inicial al mensaje por la asignación de 0
             cadena[posCaracter] = 0;
             writer.write(String.format("Mensaje[%d],%d,%d,W\n", posCaracter, paginaActualMensaje, desplazamientoMensaje));
     
@@ -91,22 +85,17 @@ public class Imagen {
                 int componente = (numBytes % bytesFila) % 3;
                 String componenteRGB = (componente == 0) ? "R" : (componente == 1) ? "G" : "B";
     
-                // Calcular el número de página basado en el byte actual
                 int numeroPaginaImagen = numBytes / tamanioPagina;
     
-                // Escribir la referencia del byte leído para la imagen con el componente adecuado
                 writer.write(String.format("Imagen[%d][%d].%s,%d,%d,R\n", fila, col, componenteRGB, numeroPaginaImagen, desplazamientoImagen));
     
-                // Recuperar el bit menos significativo del byte actual y actualizar la cadena
                 cadena[posCaracter] |= (imagen[fila][col][componente] & 1) << i;
     
-                // Escribir la referencia de la modificación del mensaje
                 writer.write(String.format("Mensaje[%d],%d,%d,W\n", posCaracter, paginaActualMensaje, desplazamientoMensaje));
     
                 // Actualizar desplazamiento de la imagen
                 desplazamientoImagen++;
                 if (desplazamientoImagen == tamanioPagina) {
-                    paginaActualImagen++;
                     desplazamientoImagen = 0;
                 }
             }
