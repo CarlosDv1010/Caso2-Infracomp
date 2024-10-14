@@ -17,7 +17,7 @@ public class Main {
             String archivoImagen = "caso2-parrots_mod.bmp";
 
             System.out.println("Ingrese el tamaño de página:");
-            int tamanioPagina = 256;
+            int tamanioPagina = 1024;
 
             Imagen imagen = new Imagen(archivoImagen); 
             Proceso proceso = new Proceso(imagen, tamanioPagina);

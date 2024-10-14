@@ -22,7 +22,7 @@ public class ProcesoOpcion2 extends Thread {
                 if (line.startsWith("NP=")) {
                     int numPaginasVirtuales = Integer.parseInt(line.split("=")[1]);
                     ram.setTablaPaginas(numPaginasVirtuales);
-                } else if (line.startsWith("M") || line.startsWith("F") || line.startsWith("R")) {
+                } else if (line.startsWith("Imagen") || line.startsWith("Mensaje")) {
                     String[] parts = line.split(",");
                     int numPaginaVirtual = Integer.parseInt(parts[1]);
                     boolean isWrite = parts[3].trim().equals("W");
@@ -45,7 +45,7 @@ public class ProcesoOpcion2 extends Thread {
     public void reloj() {
         try {
             while (ram.continuar()) {
-                Thread.sleep(4);
+                Thread.sleep(2);
                 ram.envejecer();
             }
             barrier.await();
