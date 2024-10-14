@@ -11,12 +11,12 @@ public class Main {
             String archivoImagen = "caso2-parrots_mod.bmp";
 
             System.out.println("Ingrese el tamaño de página:");
-            int tamanioPagina = 256;
+            int tamanioPagina = 10;
 
             Imagen imagen = new Imagen(archivoImagen); 
             Proceso proceso = new Proceso(imagen, tamanioPagina);
 
-            char[] cadena = new char[5069];
+            char[] cadena = new char[imagen.leerLongitud()];
 
             while(true){
                 System.out.println("Seleccione una opción:");
@@ -47,7 +47,6 @@ public class Main {
                 }
             }
             
-
         } catch (IOException e) {
             e.printStackTrace();
         }

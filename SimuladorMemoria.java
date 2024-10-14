@@ -41,10 +41,14 @@ public class SimuladorMemoria {
         // Simular acceso a las páginas basado en las referencias del archivo
         BufferedReader reader = new BufferedReader(new FileReader(archivoReferencias));
         String linea;
+        int numAcceso = 0;
         while ((linea = reader.readLine()) != null) {
-            if (linea.startsWith("Referencia:")) {
-                int numeroPagina = Integer.parseInt(linea.split(":")[1].trim());
-                adminMemoria.simularAcceso(numeroPagina);
+            if (linea.startsWith("Imagen") || linea.startsWith("Mensaje")) {
+                // Procesar referencia a la página
+                String[] partes = linea.split(",");
+                int numeroPagina = Integer.parseInt(partes[1].trim()); 
+                adminMemoria.simularAcceso(numeroPagina); 
+                numAcceso++;
             }
         }
         reader.close();

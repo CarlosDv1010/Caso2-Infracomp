@@ -8,6 +8,8 @@ public class Imagen {
     private String nombre; 
     private int hits;
     private int misses;
+    private int lastPage = -1;
+    private int lastDesplazamiento = -1;
 
     public Imagen(String input) {
         this.nombre = input;
@@ -68,14 +70,16 @@ public class Imagen {
     }
 
     public char[] recuperar(char[] cadena, int longitud, BufferedWriter writer, int tamanioPagina, int inicial) throws IOException {
-        int bytesFila = ancho * 3;
-        int desplazamientoImagen = 0;
+        int bytesFila = ancho * 3; // Cantidad de bytes en una fila de la imagen
     
-        int paginaActualMensaje = inicial;
+        int paginaActualMensaje = inicial; // Empezamos desde la página virtual siguiente a la longitud
         int desplazamientoMensaje = 0;
     
         for (int posCaracter = 0; posCaracter < longitud; posCaracter++) {
+            // Inicializamos el byte del mensaje
             cadena[posCaracter] = 0;
+    
+            // Escribir acceso al mensaje
             writer.write(String.format("Mensaje[%d],%d,%d,W\n", posCaracter, paginaActualMensaje, desplazamientoMensaje));
     
             for (int i = 0; i < 8; i++) {
@@ -85,18 +89,23 @@ public class Imagen {
                 int componente = (numBytes % bytesFila) % 3;
                 String componenteRGB = (componente == 0) ? "R" : (componente == 1) ? "G" : "B";
     
-                int numeroPaginaImagen = numBytes / tamanioPagina;
+                // Calcular el número de página de la imagen
+                int numeroPaginaImagen = (lastPage * tamanioPagina + lastDesplazamiento) / tamanioPagina;
     
-                writer.write(String.format("Imagen[%d][%d].%s,%d,%d,R\n", fila, col, componenteRGB, numeroPaginaImagen, desplazamientoImagen));
+                // Escribir acceso a la imagen
+                writer.write(String.format("Imagen[%d][%d].%s,%d,%d,R\n", fila, col, componenteRGB, numeroPaginaImagen, lastDesplazamiento));
     
+                // Recuperar el bit menos significativo del byte actual y actualizar la cadena
                 cadena[posCaracter] |= (imagen[fila][col][componente] & 1) << i;
     
+                // Escribir acceso al mensaje tras modificarlo
                 writer.write(String.format("Mensaje[%d],%d,%d,W\n", posCaracter, paginaActualMensaje, desplazamientoMensaje));
     
                 // Actualizar desplazamiento de la imagen
-                desplazamientoImagen++;
-                if (desplazamientoImagen == tamanioPagina) {
-                    desplazamientoImagen = 0;
+                lastDesplazamiento++;
+                if (lastDesplazamiento == tamanioPagina) {
+                    lastPage++;
+                    lastDesplazamiento = 0;
                 }
             }
     
@@ -110,6 +119,7 @@ public class Imagen {
     
         return cadena;
     }
+    
     
     
 
@@ -134,7 +144,7 @@ public class Imagen {
         }
     }
 
-    public int leerLongitudReferencias(BufferedWriter writer, int tamanioPagina) throws IOException {
+    public void leerLongitudReferencias(BufferedWriter writer, int tamanioPagina) throws IOException {
         int longitud = 0;
         int paginaActual = 0;
         int desplazamiento = 0;
@@ -155,12 +165,14 @@ public class Imagen {
                 paginaActual++;
                 desplazamiento = 0;
             }
+
+            lastDesplazamiento = desplazamiento;
+            lastPage = paginaActual;
         }
     
-        return longitud;
     }
 
-    public int leerLongitud(BufferedWriter writer, int tamanioPagina) throws IOException {
+    public int leerLongitud() throws IOException {
         int longitud = 0;
     
         for (int i = 0; i < 16; i++) {
@@ -170,7 +182,7 @@ public class Imagen {
             longitud |= (imagen[0][col][componente] & 1) << i;
         }
     
-        return longitud;
+        return 5;
     }
 
     public void incrementarHit() {

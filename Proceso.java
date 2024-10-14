@@ -21,7 +21,7 @@ public class Proceso {
         
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("referencias.txt"))) {
 
-            int longitud = 5069;
+            int longitud = imagen.leerLongitud();
             int nr = longitud * 17 + 16;
             int np = (int) Math.ceil((double) (imagen.getAncho() * imagen.getAlto() * 3) / tamanioPagina) + (int) Math.ceil((double) longitud / tamanioPagina);
             int inicial = (int) Math.ceil((double) (imagen.getAncho() * imagen.getAlto() * 3) / tamanioPagina);
@@ -32,9 +32,9 @@ public class Proceso {
             writer.write("NC=" + imagen.getAncho() + "\n");
             writer.write("NR=" + nr + "\n");
             writer.write("NP=" + np + "\n");
-            imagen.leerLongitudReferencias(writer, np);
+            imagen.leerLongitudReferencias(writer, tamanioPagina);
             // Recuperar el mensaje y generar referencias adicionales
-            imagen.recuperar(cadena, 5069, writer, tamanioPagina, inicial);
+            imagen.recuperar(cadena, longitud, writer, tamanioPagina, inicial);
         }
     
         System.out.println("Archivo de referencias generado.");
