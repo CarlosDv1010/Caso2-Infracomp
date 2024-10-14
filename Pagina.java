@@ -1,41 +1,62 @@
 public class Pagina {
-    private int numero;
-    private boolean bitReferencia; // Bit de referencia (si fue usada recientemente)
-    private boolean enRAM; // Si está en RAM o no
-    private long timestamp; // Marca de tiempo para reemplazo
+    private boolean enMemoria;  // Si la página está en memoria o no
+    private boolean bitR;       // Bit de referencia
+    private boolean bitM;       // Bit de modificación
+    private int paginaVirtual;  // Número de página virtual
 
-    public Pagina(int numero) {
-        this.numero = numero;
-        this.bitReferencia = false;
-        this.enRAM = false;
-        this.timestamp = System.currentTimeMillis(); // Marca de tiempo inicial
+    public Pagina() {
+        this.enMemoria = false;
+        this.bitR = false;
+        this.bitM = false;
+        this.paginaVirtual = -1;
     }
 
-    public int getNumero() {
-        return numero;
+    public synchronized boolean isEnMemoria() {
+        return enMemoria;
     }
 
-    public boolean isBitReferencia() {
-        return bitReferencia;
+    public synchronized void setEnMemoria(boolean enMemoria) {
+        this.enMemoria = enMemoria;
     }
 
-    public void setBitReferencia(boolean bitReferencia) {
-        this.bitReferencia = bitReferencia;
+    public synchronized boolean isBitR() {
+        return bitR;
     }
 
-    public boolean isEnRAM() {
-        return enRAM;
+    public synchronized void setBitR(boolean bitR) {
+        this.bitR = bitR;
     }
 
-    public void setEnRAM(boolean enRAM) {
-        this.enRAM = enRAM;
+    public synchronized boolean isBitM() {
+        return bitM;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public synchronized void setBitM(boolean bitM) {
+        this.bitM = bitM;
     }
 
-    public void actualizarTimestamp() {
-        this.timestamp = System.currentTimeMillis(); // Actualiza tiempo de uso
+    public synchronized int getPaginaVirtual() {
+        return paginaVirtual;
+    }
+
+    public synchronized boolean correspondeAPaginaVirtual(int paginaVirtual) {
+        return this.paginaVirtual == paginaVirtual;
+    }
+
+    public synchronized void cargar(int paginaVirtual) {
+        this.paginaVirtual = paginaVirtual;
+        this.enMemoria = true;
+        this.bitR = true;  // Al cargar la página, el bit de referencia se marca
+        this.bitM = false; // Al inicio no está modificada
+    }
+
+    @Override
+    public synchronized String toString() {
+        return "Pagina{" +
+                "enMemoria=" + enMemoria +
+                ", bitR=" + bitR +
+                ", bitM=" + bitM +
+                ", paginaVirtual=" + paginaVirtual +
+                '}';
     }
 }

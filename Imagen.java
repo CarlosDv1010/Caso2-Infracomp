@@ -182,7 +182,7 @@ public class Imagen {
             longitud |= (imagen[0][col][componente] & 1) << i;
         }
     
-        return 5;
+        return longitud;
     }
 
     public void incrementarHit() {
