@@ -31,6 +31,8 @@ public class Main {
                 // Leer la longitud del mensaje
                 char[] cadena = new char[imagen.leerLongitud()];
 
+                System.out.println(imagen.leerLongitud());
+
                 // Generar el archivo de referencias
                 System.out.println("Generando el archivo de referencias...");
                 proceso.recuperarMensaje(cadena);
@@ -93,6 +95,7 @@ public class Main {
                         String linea;
                         while ((linea = brMensaje.readLine()) != null) {
                             mensaje.append(linea);
+                            mensaje.append("\n");
                         }
                     }
 
