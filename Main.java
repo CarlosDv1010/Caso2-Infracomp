@@ -1,10 +1,11 @@
 import java.io.*;
 import java.util.Scanner;
+import java.util.concurrent.CyclicBarrier;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Bienvenido al sistema de esteganografía");
+        System.out.println("Bienvenido al simulador de memoria virtual con threads");
 
         while (true) {
             System.out.println("Seleccione una opción:");
@@ -15,7 +16,64 @@ public class Main {
             System.out.println("5. Salir");
             int opcion = scanner.nextInt();
 
-            if (opcion == 3) {
+            if (opcion == 1) {
+                // Opción 1: Generar el archivo de referencias
+                System.out.println("Ingrese el nombre del archivo BMP que contiene el mensaje:");
+                String archivoImagen = scanner.next();
+                
+                System.out.println("Ingrese el tamaño de página:");
+                int tamanioPagina = scanner.nextInt();
+
+                // Cargar la imagen y crear el proceso
+                Imagen imagen = new Imagen(archivoImagen);
+                Proceso proceso = new Proceso(imagen, tamanioPagina);
+
+                // Leer la longitud del mensaje
+                char[] cadena = new char[imagen.leerLongitud()];
+
+                // Generar el archivo de referencias
+                System.out.println("Generando el archivo de referencias...");
+                proceso.recuperarMensaje(cadena);
+                System.out.println("Archivo de referencias generado como 'referencias.txt'.");
+
+            } else if (opcion == 2) {
+                // Opción 2: Calcular los datos de la simulación
+                System.out.println("Ingrese el número de marcos de página:");
+                int marcosPagina = scanner.nextInt();
+                try {
+                    long startTime = System.nanoTime();
+
+                    CyclicBarrier barrier = new CyclicBarrier(2);
+
+                    BufferedReader archivoReferencias = new BufferedReader(new FileReader("referencias.txt"));
+                    SimuladorMemoria simulador = new SimuladorMemoria(marcosPagina, archivoReferencias, barrier);
+
+                    Thread procesoThread = new Thread(simulador);
+                    Thread relojThread = new Thread(() -> simulador.ejecutarReloj());
+
+                    procesoThread.start();
+                    relojThread.start();
+
+                    procesoThread.join();
+                    relojThread.join();
+
+                    long endTime = System.nanoTime() - startTime;
+
+                    long totalMilliseconds = endTime / 1_000_000;
+                    long minutes = totalMilliseconds / 60000;
+                    long seconds = (totalMilliseconds % 60000) / 1000;
+                    long milliseconds = totalMilliseconds % 1000;
+
+                    System.out.println("Número de fallas de página: " + simulador.getNumeroFallosPagina());
+                    System.out.println("Número de hits: " + simulador.getNumeroHits());
+                    System.out.println("Tiempo de ejecución: " + minutes + " minutos, " + seconds + " segundos, " + milliseconds + " milisegundos.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("\nNo se encontró el archivo de referencias.");
+                }
+                System.out.println("Simulación completada.");
+                
+            } else if (opcion == 3) {
                 // Opción 3: Esconder un mensaje en una imagen
                 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
