@@ -93,6 +93,7 @@ public class Main {
                         String linea;
                         while ((linea = brMensaje.readLine()) != null) {
                             mensaje.append(linea);
+                            mensaje.append("\n");
                         }
                     }
 
