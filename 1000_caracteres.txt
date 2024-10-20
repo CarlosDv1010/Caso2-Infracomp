@@ -1,0 +1,8 @@
+La automatización de la detección de anomalías en los datos de ventas puede ser una herramienta clave para mejorar
+la eficiencia en el proceso de validación de datos. Utilizando modelos de aprendizaje automático, se puede detectar
+patrones inusuales que podrían pasar desapercibidos en una revisión manual. Esto permite ahorrar tiempo y evitar errores
+humanos, al proporcionar alertas tempranas cuando los datos muestran cambios drásticos o inconsistencias entre los
+informes. Para implementar este sistema, es fundamental contar con un conjunto de datos bien estructurado que abarque
+las ventas de un período de tiempo considerable, lo que ayudará a entrenar el modelo con precisión. El desafío está en
+encontrar un equilibrio entre la sensibilidad del modelo a detectar anomalías reales y su capacidad para evitar falsos
+positivos, que podrían generar alarmas innecesarias y llevar a una sobrecarga en la revisión de los datos.

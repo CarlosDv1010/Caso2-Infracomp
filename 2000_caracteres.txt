@@ -1,0 +1,18 @@
+La implementación de un sistema de detección de anomalías en los datos de ventas de productos de diferentes mercados
+y compañías puede ofrecer una ventaja competitiva significativa. Este tipo de sistemas utiliza modelos de aprendizaje
+automático que, tras ser entrenados con un conjunto histórico de datos, pueden identificar cambios bruscos o patrones
+fuera de lo común. Un cambio inesperado en las ventas, como un aumento o disminución repentina, podría ser indicativo
+de un error en la entrada de datos, una promoción especial que impulsó las ventas, o incluso un problema con el proveedor
+o distribuidor.
+
+La idea es que este sistema automatizado sea capaz de reducir el trabajo manual de revisión que se realiza cada mes.
+Al contar con un algoritmo que analice los datos de manera eficiente, la empresa puede enfocar su energía en revisar
+solo aquellos casos en los que realmente se detectan irregularidades significativas. En cuanto a la implementación, uno
+de los primeros pasos es asegurarse de que los datos estén bien estructurados. El sistema debe ser capaz de procesar
+datos que a veces llegan tarde o que pueden contener errores por parte de los proveedores. Para mitigar esto, es
+recomendable tener reglas claras para la validación de los datos y sistemas que automaticen la corrección de errores
+comunes.
+
+Finalmente, la detección de anomalías no solo es útil para identificar problemas, sino también para encontrar
+oportunidades. Por ejemplo, una tendencia al alza inesperada en las ventas podría ser una señal de que un producto
+está ganando popularidad y que es necesario ajustar las estrategias de inventario o marketing.

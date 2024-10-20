@@ -1,0 +1,2 @@
+El análisis de datos se enfoca en la detección de anomalías en las ventas de productos en varios mercados.
+
